@@ -17,3 +17,7 @@ class ServerRepository:
         for server in servers:
             self.db.merge(server)
         self.db.commit()
+
+    def get_all(self) -> List[Server]:
+        servers = self.db.query(Server).all()
+        return servers

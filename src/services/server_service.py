@@ -26,6 +26,31 @@ class ServerService:
             self.cache_repository.server_create_or_update_all(servers_to_update)
 
 
+    def update_servers_profit(self, gpu_revenue_dict: Dict[int, float], price_clore: float, price_bitcoin: float)-> None:
+        servers = self.repository.get_all()
+
+
+        for server in servers:
+            prices = set()
+            if server.demand_bitcoin:
+                prices.add(server.demand_bitcoin * price_bitcoin)
+            
+            if server.demand_clore:
+                prices.add(server.demand_clore * price_clore)
+
+            lowest_price_rent = min(list(prices))
+
+            gpu_price = gpu_revenue_dict.get(server.gpu_id)
+            if gpu_price:
+                server_revenue = gpu_price * server.gpu_count
+                server.profit = server_revenue - lowest_price_rent
+                server.price = lowest_price_rent
+        
+        self.repository.create_or_update_all(servers)
+                
+
+
+
 def get_updated_servers(
     cache_servers: List[Server],
     servers: List[Server]
@@ -41,12 +66,3 @@ def get_updated_servers(
     return result
 
 
-# def to_compare_dict(server: Server) -> Dict[str, Any]:
-#     result = {}
-#     fields = ["id", "demand_bitcoin", "demand_clore", "spot_bitcoin", "spot_clore", "mb", "cpu", "cpus",
-#               "ram", "disk", "gpu_count", "rented", "mb", "disk_speed", "net_up", "net_down", "gpu_id"]
-    
-#     for field in fields:
-#         result[field] = getattr(server, field)
-#     print(result)
-#     return result

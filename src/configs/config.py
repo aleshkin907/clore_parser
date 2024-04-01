@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     REDIS_DB: Optional[int] = 0
 
     SECRET_KEY: Optional[str] = "YOUR SECRET KEY"
+    HASHRATE_API_KEY: Optional[str] = "YOUR HASHRATE_API_KEY"
 
 
     class Config:

@@ -24,10 +24,11 @@ class GpuRepository:
             gpu = self.db.merge(gpu)
             result.append(gpu)
         self.db.commit()
-            # self.db.refresh(gpu)
-            # self.db.commit()
 
-        
-            
         return result
+    
+
+    def get_all(self) -> List[Gpu]:
+        gpus = self.db.query(Gpu).all()
+        return gpus
         

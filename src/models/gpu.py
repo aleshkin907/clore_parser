@@ -69,3 +69,10 @@ def gpu_domain_to_redis(gpu_list: List[Gpu], redis_gpu_name: str) -> Dict[str, D
             temp_gpu_dict[key] = value if value is not None else ''
         gpu_dict[f'{redis_gpu_name}:{cache_key_id}'] = temp_gpu_dict
     return gpu_dict
+
+
+def get_prices_and_ids_from_gpus(gpus: List[Gpu]) -> Dict[int, float]:
+    result = {}
+    for gpu in gpus:
+        result[gpu.id] = gpu.revenue
+    return result
