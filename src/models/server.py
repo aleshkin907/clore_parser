@@ -1,6 +1,6 @@
 from typing import Any, Dict, List
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.db import Base
 from schemas.domain import DomainServerSchema
@@ -27,6 +27,8 @@ class Server(Base):
     net_down: Mapped[float]
     rented: Mapped[bool]
     profit: Mapped[float] = mapped_column(nullable=True)
+
+    gpu = relationship("Gpu", back_populates="servers")
 
 
     def __str__(self):

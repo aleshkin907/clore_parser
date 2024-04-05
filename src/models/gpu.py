@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Set
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.db import Base
 
@@ -13,6 +13,8 @@ class Gpu(Base):
     gpu_ram: Mapped[int]
     revenue: Mapped[float] = mapped_column(nullable=True)
     coin: Mapped[str] = mapped_column(nullable=True)
+
+    servers = relationship("Server", back_populates="gpu")
     
 
 def gpu_list_to_name_dict(gpus: List[Gpu]) -> Dict[str, int]:
