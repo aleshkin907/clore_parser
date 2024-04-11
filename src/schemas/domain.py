@@ -1,4 +1,5 @@
-from typing import Optional, Union
+from typing import Union
+
 from pydantic import BaseModel, validator
 
 

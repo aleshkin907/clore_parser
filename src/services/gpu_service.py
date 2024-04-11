@@ -1,4 +1,5 @@
 from typing import Dict, List, Set
+
 from models.gpu import Gpu, get_prices_and_ids_from_gpus, gpu_list_to_name_dict, gpu_list_to_name_set, gpu_list_unique
 from repositories.cache import AbstractGpuCacheRepository
 from repositories.gpu_repository import GpuRepository
@@ -10,12 +11,10 @@ class GpuService:
     repository: GpuRepository
     cache_repository: AbstractGpuCacheRepository
 
-
     def __init__(self, repository: GpuRepository, cache_repository: AbstractGpuCacheRepository):
         self.repository = repository
         self.cache_repository = cache_repository
     
-
     def get_or_create_all(self, gpu_models: List[Gpu]) -> List[int]:
         cache_gpus = self.cache_repository.gpu_get_all()
         gpus_dict = gpu_list_to_name_dict(cache_gpus)
@@ -38,7 +37,6 @@ class GpuService:
 
         return result
     
-
     def update_prices(self, gpus_schemas: Dict[DeviceSchema, RevenueSchema]) -> Dict[int, float]:
         gpus_dict = from_gpu_scemas_to_dict(gpus_schemas)
         gpus = self.repository.get_all()
@@ -56,5 +54,3 @@ class GpuService:
         gpu_revenue_dict = get_prices_and_ids_from_gpus(updated_gpus)
 
         return gpu_revenue_dict
-
-        

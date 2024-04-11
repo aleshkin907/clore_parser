@@ -1,5 +1,6 @@
-from loguru import logger
 import os
+
+from loguru import logger
 
 
 logs_directory = "src/logs"

@@ -1,5 +1,5 @@
 from typing import Any, Dict, List, Set
-from sqlalchemy import ForeignKey
+
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.db import Base
@@ -34,15 +34,6 @@ def gpu_list_to_name_set(gpus: List[Gpu]) -> Set[str]:
 
 
 def gpu_list_unique(gpus: List[Gpu]) -> List[Gpu]:
-    # gpu_set: Set[str] = gpu_list_to_name_set(gpus)
-    # res_list: List[Gpu] = [None]*len(gpu_set)
-    # for i in range(len(gpu_set)):
-    #     if gpus[i].name in gpu_set:
-    #         res_list[i] = gpus[i]
-    #         gpu_set.remove(gpus[i].name)
-    # print(res_list)
-    # return res_list
-
     gpu_set: Set[str] = gpu_list_to_name_set(gpus)
     res_list: List[Gpu] = []
     for gpu in gpus:

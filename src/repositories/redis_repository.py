@@ -1,6 +1,7 @@
 from typing import List
+
 import redis
-from configs.config import settings
+
 from models.gpu import Gpu, gpu_domain_to_redis, gpu_redis_to_domain
 from models.server import Server, server_domain_to_redis, server_redis_to_domain
 from repositories.cache import AbstractGpuCacheRepository, AbstractServerCacheRepository
