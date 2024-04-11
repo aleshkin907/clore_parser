@@ -1,9 +1,10 @@
 from typing import Any, Dict, List
+
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from schemas.domain import DomainServerSchema
 
 from db.db import Base
-from schemas.domain import DomainServerSchema
 
 
 class Server(Base):
@@ -30,36 +31,11 @@ class Server(Base):
 
     gpu = relationship("Gpu", back_populates="servers")
 
-
     def __str__(self):
          return f'{self.id} {self.price} {self.demand_bitcoin} {self.demand_clore} {self.spot_bitcoin} {self.spot_clore}\
          {self.mb} {self.cpu} {self.cpus} {self.ram} {self.disk} {self.disk_speed} {self.gpu_id} {self.gpu_count}\
          {self.net_up} {self.net_down} {self.rented} {self.profit}'
     
-
-    # def __eq__(self, other):
-    #     return all((
-    #         self.id == other.id,
-    #         self.price == other.price,
-    #         self.demand_bitcoin == other.demand_bitcoin,
-    #         self.demand_clore == other.demand_clore,
-    #         self.spot_bitcoin == other.spot_bitcoin,
-    #         self.spot_clore == other.spot_clore,
-    #         self.mb == other.mb,
-    #         self.cpu == other.cpu,
-    #         self.cpus == other.cpus,
-    #         self.ram == other.ram,
-    #         self.disk == other.disk,
-    #         self.disk_speed == other.disk_speed,
-    #         self.gpu_id == other.gpu_id,
-    #         self.gpu_count == other.gpu_count,
-    #         self.net_up == other.net_up,
-    #         self.net_down == other.net_down,
-    #         self.rented == other.rented,
-    #         self.profit == other.profit
-    #     ))
-    
-
     def __ne__(self, other):
         return self.id != other.id or \
             self.price != other.price or \

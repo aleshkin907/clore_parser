@@ -1,8 +1,7 @@
-from typing import Any, Dict, List
+from typing import List
 
 from logging_loguru.loguru import get_logger
 from repositories.cache import AbstractServerCacheRepository
-
 from models.server import Server, get_servers_dict
 from repositories.server_repository import ServerRepository
 
@@ -14,11 +13,9 @@ class ServerService:
     repository: ServerRepository
     cache_repository: AbstractServerCacheRepository
 
-
     def __init__(self, repository: ServerRepository, cache_repository: AbstractServerCacheRepository):
         self.repository = repository
         self.cache_repository = cache_repository
-
 
     def update_or_create_all(self, server_models: List[Server]) -> None:
         cache_servers = self.cache_repository.server_get_all()
@@ -29,7 +26,6 @@ class ServerService:
         if servers_to_update:
             self.repository.create_or_update_all(servers_to_update)
             self.cache_repository.server_create_or_update_all(servers_to_update)
-
 
     # def update_servers_profit(self, gpu_revenue_dict: Dict[int, float], price_clore: float, price_bitcoin: float)-> None:
     #     servers = self.repository.get_all()
@@ -53,7 +49,6 @@ class ServerService:
         
     #     self.repository.create_or_update_all(servers)
                 
-
     def update_servers_profit(self, bitcoin_price: float, clore_price: float) -> None:
         servers = self.repository.get_servers_to_update_profit()
         if not servers:
@@ -90,5 +85,3 @@ def get_updated_servers(
             result.append(server)
 
     return result
-
-

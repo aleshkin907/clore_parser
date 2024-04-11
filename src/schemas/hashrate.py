@@ -1,13 +1,15 @@
 from typing import Any, Dict, Union
-from pydantic import BaseModel, Field, validator
+
+from pydantic import BaseModel, validator
+
 
 class DeviceSchema(BaseModel):
     name: str
 
+
 class RevenueSchema(BaseModel):
     coin: str
     revenueUSD24: float
-
 
     @validator('revenueUSD24')
     def result_check(cls, v):

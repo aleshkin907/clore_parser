@@ -1,15 +1,17 @@
 from typing import List
-from pydantic import BaseModel
+
 import requests
+from bs4 import BeautifulSoup as s
+
+from schemas.hashrate import *
+from logging_loguru.loguru import get_logger
 from models.gpu import Gpu
 from models.server import Server
 from parser.consts import CLORE_SERVERS_URL, COIN_CLASS_NAME, COIN_MARKET_URL, HASHRATE_COINS_URL, HASHRATE_GPUS_URL, BTC, CLORE
 from schemas.server import ServerSchema
 from services.gpu_service import GpuService
 from services.server_service import ServerService
-from schemas.hashrate import *
-from bs4 import BeautifulSoup as s
-from logging_loguru.loguru import get_logger
+
 
 logger = get_logger()
 
@@ -20,13 +22,11 @@ class Parser:
     clore_key: str
     hashrate_key: str
 
-
     def __init__(self, clore_key: str, hashrate_key: str, gpu_service: GpuService, server_service: ServerService) -> None:
         self.clore_key = clore_key
         self.gpu_service = gpu_service
         self.server_service = server_service
         self.hashrate_key = hashrate_key
-
 
     def parse(self) -> None:
         response = requests.get(url=CLORE_SERVERS_URL, headers={"auth": self.clore_key})
@@ -96,6 +96,7 @@ class Parser:
     #     gpu_revenue_dict = self.gpu_service.update_prices(gpus_schemas)
         
     #     self.server_service.update_servers_profit(gpu_revenue_dict, price_clore, price_bitcoin)
+
 
 def get_coin_price(coin_market_url: str, class_: str) -> float:
     response = requests.get(coin_market_url, timeout=10)

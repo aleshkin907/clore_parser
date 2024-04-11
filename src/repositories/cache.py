@@ -5,7 +5,6 @@ from models.gpu import Gpu
 from models.server import Server
 
 
-
 class AbstractGpuCacheRepository(ABC):
     @abstractmethod
     def gpu_get_all() -> List[Gpu]:
