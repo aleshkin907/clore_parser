@@ -2,7 +2,7 @@ import time
 
 from db.db import session
 from repositories.redis_repository import RedisRepository
-from parser.parser import Parser, get_coin_price
+from parser.parser import Parser
 from repositories.gpu_repository import GpuRepository
 from repositories.server_repository import ServerRepository
 from services.gpu_service import GpuService
