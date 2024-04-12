@@ -1,6 +1,6 @@
 CLORE_SERVERS_URL = "https://api.clore.ai/v1/marketplace"
 HASHRATE_COINS_URL = "https://api.hashrate.no/v1/coins"
-HASHRATE_GPUS_URL = "https://api.hashrate.no/v1/gpuEstimates"
+HASHRATE_GPUS_URL = "https://hashrate.no/gpus"
 
 COIN_MARKET_URL="https://coinmarketcap.com/currencies/"
 COIN_CLASS_NAME="sc-f70bb44c-0 jxpCgO base-text"

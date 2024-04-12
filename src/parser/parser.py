@@ -69,33 +69,10 @@ class Parser:
         clore_price = get_coin_price(COIN_MARKET_URL+CLORE, COIN_CLASS_NAME)
         if not clore_price:
             return
-        self.server_service.update_servers_profit(bitcoin_price, clore_price)
 
-
-    # def update_prices(self):
-    #     response = requests.get(HASHRATE_GPUS_URL, params={"apiKey": self.hashrate_key})
-    #     if response.status_code != 200:
-    #         print("gg bet hashrate status code not 200")
-    #         return
-    #     gpus_hashrate = response.json()
-    #     gpus_schemas = from_dict_to_revenue_schemas(gpus_hashrate)
-        
-    #     response_btc = requests.get(HASHRATE_COINS_URL, params={"apiKey": self.hashrate_key, "coin": BTC})
-    #     if response_btc.status_code != 200:
-    #         print("gg bet response_btc status code not 200")
-    #         return
-
-    #     response_clore = requests.get(HASHRATE_COINS_URL, params={"apiKey": self.hashrate_key, "coin": CLORE})
-    #     if response_clore.status_code != 200:
-    #         print("gg bet response_clore status code not 200")
-    #         return
-        
-    #     price_bitcoin = round(float(response_btc.json().get("usdPrice")), 2)
-    #     price_clore = round(float(response_clore.json().get("usdPrice")), 2)
-
-    #     gpu_revenue_dict = self.gpu_service.update_prices(gpus_schemas)
-        
-    #     self.server_service.update_servers_profit(gpu_revenue_dict, price_clore, price_bitcoin)
+        gpus_dict = get_gpus_revenue_from_hashrate(HASHRATE_GPUS_URL)
+        gpu_revenue_dict = self.gpu_service.update_prices(gpus_dict)
+        self.server_service.update_servers_profit(gpu_revenue_dict, clore_price, bitcoin_price)
 
 
 def get_coin_price(coin_market_url: str, class_: str) -> float:
@@ -110,3 +87,28 @@ def get_coin_price(coin_market_url: str, class_: str) -> float:
         return
     result = float(coin.text.replace(",", "")[1:])
     return result
+
+
+def get_gpus_revenue_from_hashrate(hashrate_url: str):
+    result_dict = {}
+    response = requests.get(hashrate_url)
+    soup = s(response.text, 'html.parser')
+
+
+    html_containers = soup.find("ul", id="myUL")
+    gpus_info = html_containers.find_all(class_="w3-col l12 m12 s12")
+    
+    for element in gpus_info:
+        try:
+            gpu_name = element.find(class_="deviceHeader2").text
+        except AttributeError:
+            continue
+
+        gpu_revenue_and_coin = element.find_all(class_="w3-col l3 m6 s6 deviceData")[-1]
+
+        coin = gpu_revenue_and_coin.find('td', style="font-weight: bold;").text
+        revenue = float(gpu_revenue_and_coin.find_all('td')[1].text.strip('$'))
+
+        result_dict[gpu_name] = {"coin": coin, "revenueUSD24": revenue}
+
+    return result_dict

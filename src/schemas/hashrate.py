@@ -22,11 +22,17 @@ class DeviceRevenueSchema(BaseModel):
 
 
 def from_dict_to_revenue_schemas(data: Dict[str, Any]) -> Dict[DeviceSchema, RevenueSchema]:
-    result = {k: DeviceRevenueSchema(
-        device=DeviceSchema(**v["device"]), 
-        revenue24=RevenueSchema(**v["revenue24"]))
-        for k, v in data.items()
-    }
+    # result = {k: DeviceRevenueSchema(
+    #     device=DeviceSchema(**v["device"]), 
+    #     revenue24=RevenueSchema(**v["revenue24"]))
+    #     for k, v in data.items()
+    # }
+    # return result
+    result = {}
+    for device_name, device_data in data.items():
+        device_schema = DeviceSchema(name=device_name)
+        revenue_schema = RevenueSchema(**device_data)
+        result[device_schema] = revenue_schema
     return result
 
 
