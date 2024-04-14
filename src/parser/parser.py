@@ -28,15 +28,16 @@ class Parser:
         self.server_service = server_service
         self.hashrate_key = hashrate_key
 
+    @logger.catch
     def parse(self) -> None:
         response = requests.get(url=CLORE_SERVERS_URL, headers={"auth": self.clore_key})
         if response.status_code != 200:
-            print("gg bet status code not 200")
+            logger.warning(f"Clore response status code: {response.status_code}, text: {response.text}")
             return
         servers = response.json().get("servers")
 
         if not servers:
-            print("gg bet no servers")
+            logger.warning(f"Clore parser: zero servers from clore parser")
             return
         
         len_servers = len(servers)
@@ -78,7 +79,7 @@ class Parser:
 def get_coin_price(coin_market_url: str, class_: str) -> float:
     response = requests.get(coin_market_url, timeout=10)
     if response.status_code != 200:
-        logger.warning(f"Response status code: {response.status_code}, text: {response.text}")
+        logger.warning(f"CoinMarket response status code: {response.status_code}, text: {response.text}")
         return
     soup = s(response.text, "html.parser")
     coin = soup.find(class_=class_)
@@ -92,6 +93,9 @@ def get_coin_price(coin_market_url: str, class_: str) -> float:
 def get_gpus_revenue_from_hashrate(hashrate_url: str):
     result_dict = {}
     response = requests.get(hashrate_url)
+    if response.status_code != 200:
+        logger.warning(f"Hashrate response status code: {response.status_code}, text: {response.text}")
+        return
     soup = s(response.text, 'html.parser')
 
 
