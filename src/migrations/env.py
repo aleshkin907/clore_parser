@@ -8,6 +8,7 @@ from alembic import context
 from db.db import Base, POSTGRES_URL
 from models.gpu import Gpu
 from models.server import Server
+from models.user import User
 
 
 config = context.config
