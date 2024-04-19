@@ -1,5 +1,6 @@
-# import time
 import time
+import schedule
+
 from db.db import session
 from repositories.redis_repository import RedisRepository
 from parser.parser import Parser
@@ -8,6 +9,20 @@ from repositories.server_repository import ServerRepository
 from services.gpu_service import GpuService
 from configs.config import settings
 from services.server_service import ServerService
+from logging_loguru.loguru import get_logger
+
+
+logger = get_logger()
+
+
+def measure_time(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        logger.info(f"Execution time of {func.__name__}: {end_time - start_time} seconds")
+        return result
+    return wrapper
 
 
 if __name__ == "__main__":
@@ -18,19 +33,26 @@ if __name__ == "__main__":
 
     gpu_service = GpuService(gpu_repository, redis)
     server_service = ServerService(server_repository, redis)
+ 
+    parser = Parser(settings.SECRET_KEY, settings.HASHRATE_API_KEY, gpu_service, server_service)
 
-    # parser = Parser(key=None, url=None, gpu_service=gpu_service, server_service= server_service)
 
-    # while True:
-    #     parser.parse()  
+    @measure_time
+    def parse_wrapper():
+        parser.parse()
 
-    parser = Parser(settings.SECRET_KEY, gpu_service, server_service)
-    # parser.parse()
 
-    start_time = time.time()
-    parser.parse()
-    end_time = time.time()
+    @measure_time
+    def update_servers_profit_wrapper():
+        parser.update_servers_profit()
 
-    execution_time = end_time - start_time
-    print("Время выполнения функции: ", execution_time, "секунд")
 
+    parse_wrapper()
+    update_servers_profit_wrapper()
+    
+    schedule.every(5).minutes.do(parse_wrapper)
+    schedule.every(5).minutes.do(update_servers_profit_wrapper)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)

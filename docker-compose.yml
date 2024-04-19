@@ -1,0 +1,33 @@
+version: '3'
+services:
+  db:
+    restart: always
+    image: postgres:latest
+    container_name: db
+    ports:
+      - "${DB_PORT}:5432"
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASS}
+    env_file:
+      - .env
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "${REDIS_PORT}:5432"
+    env_file:
+      - .env
+
+  app:
+    build:
+      context: .
+    env_file:
+      - .env
+    container_name: clore_parser
+    depends_on:
+      - db
+      - redis
+    command: ["/clore_app/docker/wait-for-postgres.sh", "/clore_app/docker/app.sh"]
+    
+

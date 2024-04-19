@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Set
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.db import Base
 
@@ -13,6 +13,8 @@ class Gpu(Base):
     gpu_ram: Mapped[int]
     revenue: Mapped[float] = mapped_column(nullable=True)
     coin: Mapped[str] = mapped_column(nullable=True)
+
+    servers = relationship("Server", back_populates="gpu")
     
 
 def gpu_list_to_name_dict(gpus: List[Gpu]) -> Dict[str, int]:
@@ -32,15 +34,6 @@ def gpu_list_to_name_set(gpus: List[Gpu]) -> Set[str]:
 
 
 def gpu_list_unique(gpus: List[Gpu]) -> List[Gpu]:
-    # gpu_set: Set[str] = gpu_list_to_name_set(gpus)
-    # res_list: List[Gpu] = [None]*len(gpu_set)
-    # for i in range(len(gpu_set)):
-    #     if gpus[i].name in gpu_set:
-    #         res_list[i] = gpus[i]
-    #         gpu_set.remove(gpus[i].name)
-    # print(res_list)
-    # return res_list
-
     gpu_set: Set[str] = gpu_list_to_name_set(gpus)
     res_list: List[Gpu] = []
     for gpu in gpus:
@@ -69,3 +62,10 @@ def gpu_domain_to_redis(gpu_list: List[Gpu], redis_gpu_name: str) -> Dict[str, D
             temp_gpu_dict[key] = value if value is not None else ''
         gpu_dict[f'{redis_gpu_name}:{cache_key_id}'] = temp_gpu_dict
     return gpu_dict
+
+
+def get_prices_and_ids_from_gpus(gpus: List[Gpu]) -> Dict[int, float]:
+    result = {}
+    for gpu in gpus:
+        result[gpu.id] = gpu.revenue
+    return result

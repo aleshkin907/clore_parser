@@ -9,11 +9,9 @@ from models.gpu import Gpu, gpu_list_to_name_dict
 class GpuRepository:
     db: Session
 
-
     def __init__(self, db: Session):
         self.db = db
 
-    
     def get_or_create_all(self, gpus: List[Gpu]) -> List[Gpu]:
         result = []
         gpus_repo = self.db.query(Gpu).all()
@@ -24,10 +22,10 @@ class GpuRepository:
             gpu = self.db.merge(gpu)
             result.append(gpu)
         self.db.commit()
-            # self.db.refresh(gpu)
-            # self.db.commit()
 
-        
-            
         return result
+
+    def get_all(self) -> List[Gpu]:
+        gpus = self.db.query(Gpu).all()
+        return gpus
         
