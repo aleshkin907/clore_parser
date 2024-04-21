@@ -11,7 +11,7 @@ logger = get_logger()
 
 
 class ServerRepository:
-    de: Session
+    db: Session
 
     def __init__(self, db: Session):
         self.db = db
